@@ -1,5 +1,5 @@
 // export const getReviews = async () => {
-//   const res = await fetch(`{env}`);
+//   const res = await fetch(`${env}`);
 //   const body = await res.json();
 //   return body;
 // };
