@@ -59,3 +59,41 @@
     setHasNext(paging.hasNext);
 
 };
+
+#### 버그 3.
+
+    내용 : form 태그 안에서 입력된 값을 확인 하려고 button을 누르면
+    새로고침이 되면서 값이 전달이 안되는 경우가 있습니다.
+    HTML forn 태그의 기본동작은 submit 버튼을 눌렀을 때 입력폼의 값과 함께
+    get request를 보내기 때문에 기본동작을 막아줘야 합니다.
+
+    해결
+     const handleSubmit = (e) => {
+        e.preventDefault();
+      console.log({ title, rating, content });
+    };
+
+#### 버그 4.
+
+    내용 : rating 값이 숫자로 처리가 되지 않는 문제가 있습니다.
+
+    해결
+
+```
+  function sanitize(type, value) {
+    switch (type) {
+     case 'number':
+        return Number(value) || 0;
+    default:
+      return value;
+  }
+}
+const handleChange = (e) => {
+  const { name, value, type } = e.target;
+
+  setValues((prevValues) => ({
+    ...prevValues,
+    [name]: sanitize(type, value),
+  }));
+};
+```
