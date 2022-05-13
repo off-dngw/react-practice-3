@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getReviews } from "../api";
+import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 // import mockItems from "../mock.json";
 
@@ -58,6 +59,7 @@ const App = () => {
         <button onClick={handleNewestClick}>최신순</button>
         <button onClick={handleBestCLick}>베스트</button>
       </div>
+      <ReviewForm />
       <ReviewList items={sortedItems} ondelete={handleDelete} />
       {
         // 데이터가 있을 때만 버튼 보여주는 부분

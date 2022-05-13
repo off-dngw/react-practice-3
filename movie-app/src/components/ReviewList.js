@@ -1,4 +1,5 @@
 import React from "react";
+import Rating from "./Rating";
 import "./ReviewList.css";
 
 function formatDate(value) {
@@ -13,7 +14,7 @@ function ReviewListItem({ item, ondelete }) {
       <img className="ReviewListItem-img" src={item.imgUrl} alt={item.title} />
       <div>
         <h1>{item.title}</h1>
-        <p>{item.rating}</p>
+        <Rating value={item.rating} />
         <p>{formatDate(item.createdAt)}</p>
         <p>{item.content}</p>
         <button onClick={handleDeleteClick}>삭제하기</button>
