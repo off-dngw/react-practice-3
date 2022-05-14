@@ -50,6 +50,9 @@ const App = () => {
     handleLoad({ order, offset, limit: LIMIT });
   };
 
+  const handleSubmitSuccess = (review) => {
+    setItems((prevItems) => [review, ...prevItems]);
+  };
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
   }, [order]);
@@ -59,7 +62,7 @@ const App = () => {
         <button onClick={handleNewestClick}>최신순</button>
         <button onClick={handleBestCLick}>베스트</button>
       </div>
-      <ReviewForm />
+      <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
       <ReviewList items={sortedItems} ondelete={handleDelete} />
       {
         // 데이터가 있을 때만 버튼 보여주는 부분
