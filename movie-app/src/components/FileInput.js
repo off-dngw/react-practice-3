@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 
-const FileInput = ({ name, value, onChange }) => {
-  const [preview, setPreview] = useState();
+const FileInput = ({ name, value, onChange, initialPreview }) => {
+  const [preview, setPreview] = useState(initialPreview);
   const inputRef = useRef();
   const handleChange = (e) => {
     const nextValue = e.target.files[0];
@@ -31,11 +31,11 @@ const FileInput = ({ name, value, onChange }) => {
 
     //사이드 이펙트 정리 코드
     return () => {
-      setPreview();
+      setPreview(initialPreview);
       // obejct 해제해주는 코드
       URL.revokeObjectURL(nextPreview);
     };
-  }, [value]);
+  }, [value, initialPreview]);
 
   return (
     <div>
