@@ -139,7 +139,7 @@ const handleChange = (e) => {
 
 #### After
 
-```
+```js
   const [isLoading, lodingError, getReviewsAsync] = useAsync(getReviews)
 
 
