@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getReviews } from "../api";
+import { getReviews, updateReview } from "../api";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 // import mockItems from "../mock.json";
+import { createReview } from "../api";
 
 const LIMIT = 6;
 
@@ -50,8 +51,19 @@ const App = () => {
     handleLoad({ order, offset, limit: LIMIT });
   };
 
-  const handleSubmitSuccess = (review) => {
+  const handleCreateSuccess = (review) => {
     setItems((prevItems) => [review, ...prevItems]);
+  };
+
+  const handleUpdateSuccess = (review) => {
+    setItems((prevItems) => {
+      const splitIdx = prevItems.findIndex((item) => item.id === review.id);
+      return [
+        ...prevItems.slice(0, splitIdx),
+        review,
+        ...prevItems.slice(splitIdx + 1),
+      ];
+    });
   };
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
@@ -62,8 +74,16 @@ const App = () => {
         <button onClick={handleNewestClick}>최신순</button>
         <button onClick={handleBestCLick}>베스트</button>
       </div>
-      <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
-      <ReviewList items={sortedItems} ondelete={handleDelete} />
+      <ReviewForm
+        onSubmit={createReview}
+        onSubmitSuccess={handleCreateSuccess}
+      />
+      <ReviewList
+        items={sortedItems}
+        ondelete={handleDelete}
+        onUpdate={updateReview}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
       {
         // 데이터가 있을 때만 버튼 보여주는 부분
         hasNext && (
