@@ -174,7 +174,7 @@ function App() {
 
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
-  }, [order]);
+  }, [order, handleLoad]);
 
   return (
     <div>
