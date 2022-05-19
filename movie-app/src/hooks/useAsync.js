@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-function useAsync(asnyFunction) {
+function useAsync(asyncFunction) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,14 +22,14 @@ function useAsync(asnyFunction) {
       try {
         setError(null);
         setPending(true);
-        return await asnyFunction(...args);
+        return await asyncFunction(...args);
       } catch (error) {
         setError(error);
       } finally {
         setPending(false);
       }
     },
-    [asnyFunction]
+    [asyncFunction]
   );
   return [pending, error, wrappedFunction];
 }
