@@ -197,7 +197,7 @@ useEffect(() => {
 
 2. The 'handleLoad' function makes the depencencies of useEffect Hook change on every render
    To fix this, wrap the definition of 'handleLoad' in its own useCallback() Hook
-   - handleLoad가 depencencies로 추가가 되었는데 렌더링 할 때 마다 매번 바뀌니까 useCallback을 사용하라는 경고
+- handleLoad가 depencencies로 추가가 되었는데 렌더링 할 때 마다 매번 바뀌니까 useCallback을 사용하라는 경고
 
 #### 해결 방법
 
