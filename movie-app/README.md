@@ -267,17 +267,17 @@ const wrappedFunction = useCallback(
     try {
       setError(null);
       setPending(true);
-      return await asnyFunction(...args);
+      return await asyncFunction(...args);
     } catch (error) {
       setError(error);
     } finally {
       setPending(false);
     }
   },
-  [asnyFunction]
+  [asyncFunction]
 );
 ```
 
 - setError와 setPending은 react에서 제공하는 setter 함수이기 때문에 dependency list에 추가 할 필요가 없습니다.
-- asnyFunction을 참조하고 있습니다. asnyFunction이 바뀌면 wrappedFunction도 새로 만들어야 하기 때문에
-  asnyFunction을 dependency list에 추가 하면 됩니다.
+- asyncFunction을 참조하고 있습니다. asyncFunction 바뀌면 wrappedFunction도 새로 만들어야 하기 때문에
+  asyncFunction dependency list에 추가 하면 됩니다.
