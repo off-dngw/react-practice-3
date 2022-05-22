@@ -1,54 +1,57 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
+import placeholderImg from '../assets/preview-placeholder.png';
+import resetImg from '../assets/ic-reset.png';
+import './FileInput.css';
 
-const FileInput = ({ name, value, onChange, initialPreview }) => {
+function FileInput({ className = '', name, value, initialPreview, onChange }) {
   const [preview, setPreview] = useState(initialPreview);
   const inputRef = useRef();
+
   const handleChange = (e) => {
     const nextValue = e.target.files[0];
     onChange(name, nextValue);
   };
 
-  //   useEffect(() => {
-  //     if (inputRef.current) {
-  //       console.log(inputRef);
-  //     }
-  //   }, []);
-
   const handleClearClick = () => {
     const inputNode = inputRef.current;
-    if (!inputNode) {
-      return;
-    }
-    inputNode.value = "";
+    if (!inputNode) return;
+
+    inputNode.value = '';
     onChange(name, null);
   };
 
   useEffect(() => {
     if (!value) return;
-
     const nextPreview = URL.createObjectURL(value);
     setPreview(nextPreview);
 
-    //사이드 이펙트 정리 코드
     return () => {
       setPreview(initialPreview);
-      // obejct 해제해주는 코드
       URL.revokeObjectURL(nextPreview);
     };
   }, [value, initialPreview]);
 
   return (
-    <div>
-      <img src={preview} alt="이미지 미리보기" />
+    <div className={`FileInput ${className}`}>
+      <img
+        className={`FileInput-preview ${preview ? 'selected' : ''}`}
+        src={preview || placeholderImg}
+        alt="이미지 미리보기"
+      />
       <input
+        className="FileInput-hidden-overlay"
         type="file"
         accept="image/png, image/jpeg"
         onChange={handleChange}
         ref={inputRef}
       />
-      {value && <button onClick={handleClearClick}>X</button>}
+      {value && (
+        <button className="FileInput-clear-button" onClick={handleClearClick}>
+          <img src={resetImg} alt="선택해제" />
+        </button>
+      )}
     </div>
   );
-};
+}
 
 export default FileInput;

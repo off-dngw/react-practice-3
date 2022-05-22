@@ -1,121 +1,111 @@
-import React, { useState } from "react";
-import FileInput from "./FileInput";
-// import Rating from "./Rating";
-import RatingInput from "./RatingInput";
-import "./ReviewForm.css";
+import { useState } from 'react';
+import useAsync from '../hooks/useAsync';
+import useTranslate from '../hooks/useTranslate';
+import FileInput from './FileInput';
+import RatingInput from './RatingInput';
+import './ReviewForm.css';
 
 const INITIAL_VALUES = {
-  title: "",
+  title: '',
   rating: 0,
-  content: "",
+  content: '',
   imgFile: null,
 };
 
-function sanitize(type, value) {
-  switch (type) {
-    case "number":
-      return Number(value) || 0;
-
-    default:
-      return value;
-  }
-}
-
-const ReviewForm = ({
+function ReviewForm({
+  className = '',
   initialValues = INITIAL_VALUES,
   initialPreview,
-  onSubmitSuccess,
-  onSubmit,
   onCancel,
-}) => {
-  //   const [title, setTitle] = useState("");
-  //   const [rating, setRating] = useState(0);
-  //   const [content, setContent] = useState("");
+  onSubmit,
+  onSubmitSuccess,
+}) {
+  const t = useTranslate();
   const [values, setValues] = useState(initialValues);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittingError, setSubmittingError] = useState(null);
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
 
-  const handleChage = (name, value, type) => {
+  const handleChange = (name, value) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [name]: sanitize(type, value, type),
+      [name]: value,
     }));
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type } = e.target;
-    handleChage(name, value, type);
-    // setValues((prevValues) => ({
-    //   ...prevValues,
-    //   [name]: sanitize(type, value),
-    // }));
+    const { name, value } = e.target;
+    handleChange(name, value);
   };
-
-  //   const handleTitleChange = (e) => {
-  //     setTitle(e.target.value);
-  //   };
-
-  //   const handleRatingChange = (e) => {
-  //     setRating(e.target.value);
-  //   };
-
-  //   const handleContentChange = (e) => {
-  //     setContent(e.target.value);
-  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("rating", values.rating);
-    formData.append("content", values.content);
-    formData.append("imgFile", values.imgFile);
+    formData.append('title', values.title);
+    formData.append('rating', values.rating);
+    formData.append('content', values.content);
+    formData.append('imgFile', values.imgFile);
 
-    let result;
-    try {
-      setSubmittingError(null);
-      setIsSubmitting(true);
-      result = await onSubmit(formData);
-    } catch (error) {
-      setSubmittingError(error);
-      return;
-    } finally {
-      setIsSubmitting(false);
-    }
+    const result = await onSubmitAsync(formData);
+    if (!result) return;
+
     const { review } = result;
     setValues(INITIAL_VALUES);
     onSubmitSuccess(review);
-    // console.log(values);
-    // console.log({ title, rating, content });
   };
 
   return (
-    <form className="ReviewForm" onSubmit={handleSubmit}>
+    <form className={`ReviewForm ${className}`} onSubmit={handleSubmit}>
       <FileInput
+        className="ReviewForm-preview"
         name="imgFile"
         value={values.imgFile}
-        onChange={handleChage}
         initialPreview={initialPreview}
+        onChange={handleChange}
       />
-      <input name="title" value={values.title} onChange={handleInputChange} />
-      <RatingInput
-        name="rating"
-        type="number"
-        value={values.rating}
-        onChange={handleChage}
-      />
-      <textarea
-        name="content"
-        value={values.content}
-        onChange={handleInputChange}
-      />
-      {onCancel && <button onClick={onCancel}>취소</button>}
-      <button type="submit" disabled={isSubmitting}>
-        확인
-      </button>
-      {submittingError?.message && <div>{submittingError.message}</div>}
+      <div className="ReviewForm-rows">
+        <div className="ReviewForm-title-rating">
+          <input
+            className="ReviewForm-title"
+            name="title"
+            value={values.title}
+            placeholder={t('title placeholder')}
+            onChange={handleInputChange}
+          />
+          <RatingInput
+            className="ReviewForm-rating"
+            name="rating"
+            value={values.rating}
+            onChange={handleChange}
+          />
+        </div>
+        <textarea
+          className="ReviewForm-content"
+          name="content"
+          value={values.content}
+          placeholder={t('content placeholder')}
+          onChange={handleInputChange}
+        />
+        <div className="ReviewForm-error-buttons">
+          <div className="ReviewForm-error">
+            {submittingError && <div>{submittingError.message}</div>}
+          </div>
+          <div className="ReviewForm-buttons">
+            {onCancel && (
+              <button className="ReviewForm-cancel-button" onClick={onCancel}>
+                {t('cancel button')}
+              </button>
+            )}
+            <button
+              className="ReviewForm-submit-button"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {t('confirm button')}
+            </button>
+          </div>
+        </div>
+      </div>
     </form>
   );
-};
+}
 
 export default ReviewForm;
